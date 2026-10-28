@@ -13,6 +13,7 @@
   h1 { margin: 0 0 6px; font-size: 26px; } h1 b { color: #e0263f; }
   p { margin: 6px 0; color: #c9d3cc; font-weight: 600; }
   .no { margin: 18px 0; font-size: 44px; font-weight: 900; letter-spacing: 6px; color: #ffe27a; word-break: break-all; }
+  a.btn.web { background: #22392f; color: #FFF6E5; border: 1.5px solid #c9a45c; font-size: 17px; }
   a.btn { display: block; margin: 14px 0 8px; padding: 16px; font-size: 20px; font-weight: 900; color: #1a1200; text-decoration: none; background: linear-gradient(#ffe27a, #e2a92a); }
   small { display: block; margin-top: 14px; color: #93a59a; line-height: 1.5; }
 </style>
@@ -23,7 +24,8 @@
   <p>친구가 친선전에 초대했어요</p>
   <div class="no" id="no">-</div>
   <a class="btn" id="open" href="#">앱에서 바로 입장</a>
-  <small>앱이 안 열리면: 동탄한판 → 친구와 친선전 → <b>참여하기</b>에 위 번호를 넣어 주세요.<br>앱이 없으면 초대한 친구에게 설치 파일을 받아 주세요.</small>
+  <a class="btn web" id="web" href="https://dongtan-matgo.web.app/">앱 없이 웹으로 입장 (아이폰)</a>
+  <small>아이폰은 웹으로 열린 뒤 <b>공유 → 홈 화면에 추가</b>를 하면 앱처럼 쓸 수 있어요.<br>앱이 안 열리면: 동탄한판 → 친구와 친선전 → <b>참여하기</b>에 위 번호를 넣어 주세요.</small>
 </main>
 <script>
   // 방 번호(또는 이름)를 받아 동탄한판 앱을 엶 (안드로이드: intent 주소, 그 밖: dongtan:// 주소)
@@ -31,8 +33,12 @@
   document.getElementById('no').textContent = r || '-';
   var q = 'r=' + encodeURIComponent(r);
   var android = /android/i.test(navigator.userAgent);
-  var url = android ? 'intent://join?' + q + '#Intent;scheme=dongtan;package=com.bluenine.gostop;end' : 'dongtan://join?' + q;
+  var web = 'https://dongtan-matgo.web.app/?' + q; // 웹앱 (아이폰 · 앱 없는 사람)
+  document.getElementById('web').href = web;
+  // 안드로이드: 앱이 있으면 앱으로, 없으면 웹으로 / 아이폰 등: 웹으로 바로
+  var url = android ? 'intent://join?' + q + '#Intent;scheme=dongtan;package=com.bluenine.gostop;S.browser_fallback_url=' + encodeURIComponent(web) + ';end' : web;
   var a = document.getElementById('open'); a.href = url;
+  if (!android) a.style.display = 'none';
   if (r) setTimeout(function () { location.href = url; }, 300);
 </script>
 </body>
